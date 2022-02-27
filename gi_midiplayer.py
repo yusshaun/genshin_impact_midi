@@ -11,6 +11,8 @@ import threading
 from time import time
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets  import QFileDialog
+from qt_material import apply_stylesheet
+import ctypes, sys
 
 idk = {"48":"z","49":"z","50":"x","51":"x","52":"c","53":"v","54":"v","55":"b","56":"b","57":"n","58":"n","59":"m","60":"a","61":"a","62":"s","63":"s","64":"d","65":"f","66":"f","67":"g","68":"g","69":"h","70":"h","71":"j","72":"q","73":"q","74":"w","75":"w","76":"e","77":"r","78":"r","79":"t","80":"t","81":"y","82":"y","83":"u"}
 exit_flag = False
@@ -36,6 +38,7 @@ class Ui_MainWindow(threading.Thread,object):
             self.file_name = self.file_namefile
         
     def setupUi(self, MainWindow):
+        MainWindow.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(468, 251)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -71,7 +74,7 @@ class Ui_MainWindow(threading.Thread,object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Genshin Auto windsong"))
         self.pushButton.setText(_translate("MainWindow", "開始"))
         self.pushButton_2.setText(_translate("MainWindow", "暫停"))
         self.pushButton_3.setText(_translate("MainWindow", "開啟檔案"))
@@ -133,10 +136,11 @@ if __name__ == "__main__":
         import sys
         app = QtWidgets.QApplication(sys.argv)
         MainWindow = QtWidgets.QMainWindow()
+        apply_stylesheet(app, theme='dark_teal.xml')
         ui = Ui_MainWindow()
         ui.setupUi(MainWindow)
         MainWindow.show()
         sys.exit(app.exec_())
     else:
-        print("%15s" % "沒有權限")
-        print('%20s'%'*** 需要以管理員身份執行 ***')
+        if sys.version_info[0] == 3:
+            ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
